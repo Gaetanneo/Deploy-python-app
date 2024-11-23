@@ -13,7 +13,7 @@ pipeline {
         PROJECT_NAME = "flask-mysql"
     }
 
-    // stages {
+    stages {
     //     stage('Fetch Code') {
     //         steps {
     //             // Checkout code from Git repository
@@ -21,7 +21,7 @@ pipeline {
     //             sh 'ls -l $WORKSPACE'
     //         }
     //     }
-    stage('Checkout from Git') {
+        stage('Checkout from Git') {
             steps {
                 git branch: 'main', url: 'https://github.com/gaetanneo/Deploy-python-app.git'
             }
