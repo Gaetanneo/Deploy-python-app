@@ -20,6 +20,7 @@ ENV FLASK_APP=http://flask-app:5000
 # Copy test files
 COPY . .
 COPY test_main.py .
+COPY --from=docker/buildx-bin /buildx /usr/libexec/docker/cli-plugins/docker-buildx
 COPY --chmod=777 wait.sh /wait.sh
 
 
