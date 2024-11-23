@@ -11,6 +11,7 @@ pipeline {
         DOCKER_TAG = "${GIT_COMMIT}" // Tag Docker images with the git commit ID
         KUBE_CONFIG = "/tmp/kubeconfig"
         PROJECT_NAME = "flask-mysql"
+        DOCKER_BUILDKIT = '1'
     }
 
     stages {
