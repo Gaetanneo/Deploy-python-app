@@ -40,7 +40,7 @@ pipeline {
             steps {
                 script {
                     // Use Docker Compose to build and start the services defined in docker-compose.yaml
-                    sh 'docker-compose -f $WORKSPACE/docker-compose.yaml up --build -d'
+                    sh 'docker-compose -f docker-compose.yaml up --build -d'
                 }
             }
         }
@@ -88,7 +88,7 @@ pipeline {
                     }
 
                     // Tag the MySQL image with the commit tag before pushing
-                    sh "docker tag mysql:5.7 ${DOCKER_IMAGE_MYSQL}:${DOCKER_TAG}"
+                    sh "docker tag mysql:8.0 ${DOCKER_IMAGE_MYSQL}:${DOCKER_TAG}"
 
                     // Push the Flask Docker image to Docker Hub
                     sh "docker push ${DOCKER_IMAGE_FLASK}:${DOCKER_TAG}"
@@ -114,14 +114,14 @@ pipeline {
                     sh 'KUBECONFIG=$KUBE_CONFIG kubectl config view'
                     sh 'KUBECONFIG=$KUBE_CONFIG kubectl get nodes'
 
-                    sh ' envsubst < $WORKSPACE/mysql-dep.yaml > $WORKSPACE/mysql-deployment-updated.yaml'
-                    sh ' envsubst < $WORKSPACE/flask-dep.yaml > $WORKSPACE/flask-deployment-updated.yaml'
+                    sh ' envsubst < mysql-dep.yaml > mysql-deployment-updated.yaml'
+                    sh ' envsubst < flask-dep.yaml > flask-deployment-updated.yaml'
 
                     // Deploy Flask app and MySQL to Kubernetes
-                    sh 'KUBECONFIG=$KUBE_CONFIG kubectl apply -f $WORKSPACE/persistentvolume.yaml -n ${KUBE_NAMESPACE}'
-                    sh 'KUBECONFIG=$KUBE_CONFIG kubectl apply -f $WORKSPACE/persistentvolumeclaim.yaml -n ${KUBE_NAMESPACE}'
-                    sh 'KUBECONFIG=$KUBE_CONFIG kubectl apply -f $WORKSPACE/mysql-deployment-updated.yaml -n ${KUBE_NAMESPACE}'
-                    sh 'KUBECONFIG=$KUBE_CONFIG kubectl apply -f $WORKSPACE/flask-deployment-updated.yaml -n ${KUBE_NAMESPACE}'
+                    sh 'KUBECONFIG=$KUBE_CONFIG kubectl apply -f persistentvolume.yaml -n ${KUBE_NAMESPACE}'
+                    sh 'KUBECONFIG=$KUBE_CONFIG kubectl apply -f persistentvolumeclaim.yaml -n ${KUBE_NAMESPACE}'
+                    sh 'KUBECONFIG=$KUBE_CONFIG kubectl apply -f mysql-deployment-updated.yaml -n ${KUBE_NAMESPACE}'
+                    sh 'KUBECONFIG=$KUBE_CONFIG kubectl apply -f flask-deployment-updated.yaml -n ${KUBE_NAMESPACE}'
                 }
                 }
             }
