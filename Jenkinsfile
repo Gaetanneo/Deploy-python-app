@@ -56,17 +56,18 @@ pipeline {
 
         stage('Perform Unit test'){
             steps{
-                script{
-                    sh 'docker-compose exec -T pytest /wait.sh mysql-service:3306 pytest test_main.py'
-                    def testResult = sh(script: 'docker-compose exec -T pytest pytest test_main.py -v --tb=short', returnStatus: true)
+               script{
+                   def testResult = sh(
+                       script: 'docker-compose exec -T pytest /wait.sh mysql-service:3306 -- pytest test_main.py -v --tb=short',
+                       returnStatus: true
+                   )
 
-                    // Check if the tests passed (exit code 0 means success)
-                    if (testResult != 0) {
-                        error "Tests failed! Exiting pipeline."
-                    } else {
-                        echo 'Tests passed successfully.'
-                    }
-                }
+                   if (testResult != 0) {
+                       error "Tests failed! Exiting pipeline."
+                   } else {
+                       echo 'Tests passed successfully.'
+                   }
+               }
             }
         }
 
